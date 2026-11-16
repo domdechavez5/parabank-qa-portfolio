@@ -9,7 +9,7 @@
 | Related test cases | TC-F03-04, TC-F03-05, TC-F03-06 |
 | Related lead and defects | EO-10, PBQ-4 and PBQ-9 (same missing balance check in Transfer Funds and Bill Pay) |
 | Environment | ParaBank (parasoft/parabank, master) run locally on Windows 11, Java 21, default Admin settings, baseline data, user john |
-| Reproduced | 2 of 2 attempts for each funding account |
+| Reproduced | 2 of 2 attempts for each funding account: (1) each case run separately from a fresh baseline (new account 13566 each time; the attached screenshots are from these runs), (2) all three run in one session without restarting between them (new accounts 13566, 13677, and 13788; same balances and total) |
 
 ## Steps to reproduce
 1. Restart ParaBank to the baseline and log in as john / demo.
@@ -18,7 +18,7 @@
 4. Select CHECKING as the account type and select account 12456 as the funding account.
 5. Submit the form.
 6. Open Accounts Overview.
-7. Repeat steps 3-6 with funding account 12900, then with funding account 12345.
+7. Repeat steps 1-6, starting from the baseline again each time, with funding account 12900, then with funding account 12345. In these baseline runs the new account number was 13566 every time.
 
 ## Expected result
 The request is rejected with a clear insufficient-funds message, no account is created, and no balance changes (the page states that a minimum of $100.00 must be deposited; the behavior for insufficient funding is otherwise unspecified, and ParaBank has no requirements document).
