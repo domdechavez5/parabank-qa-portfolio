@@ -1,6 +1,6 @@
 # ParaBank Feature Inventory
 
-Last updated: October 22, 2026
+Last updated: November 19, 2026
 
 Application: ParaBank, local install (see environment-notes.md). All data used is made up. Admin Page settings were read only and are at their defaults.
 
@@ -23,7 +23,7 @@ How to read this document:
 | F-06 | Bill Pay | Sends a payment from one of the customer's accounts to a payee | Payee Name, Address, City, State, Zip Code, and Phone # accept any characters with a minimum length of 1. Account # and Verify Account # accept numbers only and must match. From account is chosen from existing accounts. Amount accepts numbers only. | Yes | What are the intended rules for amount limits and negative values? Is the payee account validated against anything? |
 | F-07 | Find Transactions | Searches an account's transactions | Four search modes: by Transaction ID (numbers only), by Date (MM-DD-YYYY), by Date Range (MM-DD-YYYY), by Amount (numbers only). Account selector dropdown. | No | Should the account selector limit results in every search mode? (see EO-06) |
 | F-08 | Update Contact Info | Edits the customer's profile details | Fields: First Name, Last Name, Address, City, State, Zip Code, Phone #. Text fields accept any characters with a minimum length of 1. | No | Where are the updated details displayed? Are there format rules for phone and zip code? |
-| F-09 | Request Loan | Applies for a loan | Fields: Loan Amount (numbers only), Down Payment (numbers only), and a From account selector. On approval, a new account is created whose balance equals the loan amount, and the down payment is deducted from the selected From account (new From balance = previous balance minus down payment). Messages seen: "We cannot grant a loan in that amount with your available funds" (for example, a negative loan amount) and "You do not have sufficient funds for the given down payment." (shown when the down payment exceeds the From account's balance). The Admin Page has a Loan Processor setting (Available Funds by default). | Yes | What are the approval rules under each Loan Processor mode (Available Funds, Down Payment, Combined) and the 20% threshold setting? How should the new loan account appear in the Accounts Overview total, given its balance equals the loan amount? What is the intended behavior for a loan amount smaller than the down payment, or a negative down payment? Why does the loan reject a down payment above the account balance when Transfer Funds, Bill Pay, and Open New Account accept amounts above the balance? |
+| F-09 | Request Loan | Applies for a loan | Fields: Loan Amount (numbers only), Down Payment (numbers only), and a From account selector. The result page shows a loan provider ("Wealth Securities Dynamic Loans (WSDL)"), the date, a status (Approved or Denied), and a message. On approval, a new account of type LOAN is created with a balance equal to the loan amount, and the down payment is deducted from the selected From account. Messages seen: "We cannot grant a loan in that amount with your available funds." (for example, a negative loan amount, or a very large loan such as 100000.00 from the baseline) and "You do not have sufficient funds for the given down payment." (shown when the down payment exceeds the total of all accounts, not the From account's balance; see PBQ-13). The Admin Page has a Loan Processor setting (Available Funds by default). | Yes | What is the maximum loan amount that is approved (1692.68 was approved and 100000.00 was denied)? What do the Loan Processor, Loan Provider, and Threshold settings change? Should the new LOAN balance be added to the Accounts Overview total as a positive amount? What is the intended behavior for a zero down payment (approved in testing), a loan amount smaller than the down payment, or a negative down payment? |
 | F-10 | Contact Us | Customer care page with an email support form | Fields: Name, Email, Phone, Message. Text fields accept any characters with a minimum length of 1. | No | Does the form actually send or store the message? Is the email field validated? |
 | F-11 | Log Out | Logs the user out and returns to the Home page with the Customer Login section | None | No | Can the previous pages be reached with the browser Back button after logging out? |
 
@@ -43,18 +43,22 @@ How to read this document:
 
 | ID | Area | Observation | Status |
 |---|---|---|---|
-| EO-01 | Transfer Funds, Bill Pay | Negative amounts are accepted. | To verify |
-| EO-02 | Transfer Funds, Bill Pay | Amounts greater than the account balance are accepted. | To verify |
-| EO-03 | Transfer Funds, Bill Pay, Request Loan | An amount with more than two decimals shows "An internal error has occurred and has been logged." | To verify |
-| EO-04 | Request Loan | Empty or non-numeric input shows the same generic internal error message. | To verify |
+| EO-01 | Transfer Funds, Bill Pay | Negative amounts are accepted. | Confirmed: PBQ-3 (Transfer Funds), PBQ-8 (Bill Pay) |
+| EO-02 | Transfer Funds, Bill Pay | Amounts greater than the account balance are accepted. | Confirmed: PBQ-4 (Transfer Funds), PBQ-9 (Bill Pay) |
+| EO-03 | Transfer Funds, Bill Pay, Request Loan | An amount with more than two decimals is accepted with a rounded amount in the confirmation, then most of the site shows an internal error until ParaBank is restarted. | Confirmed for Transfer Funds and Bill Pay: PBQ-5, PBQ-11. Request Loan not yet tested. |
+| EO-04 | Request Loan | Empty or non-numeric input shows a generic internal error message. | To verify. Transfer Funds shows the same error for these inputs (PBQ-6); Bill Pay shows clear validation messages instead. |
 | EO-05 | Request Loan | A loan amount smaller than the down payment is accepted, and a negative down payment is accepted. | To verify |
 | EO-06 | Find Transactions | The account selector does not always limit results; a Transaction ID search showed transactions from other accounts. | To verify |
 | EO-07 | Home | Several service links open XML pages. May be intended, since they may point to service descriptions. | To verify |
 | EO-08 | Register, Bill Pay, Update Contact Info, Contact Us | Text fields accept any characters with a minimum length of 1; no format checks seen for SSN, phone, or zip code. | To verify |
 | EO-09 | Open New Account | Resolved: the Accounts Overview total is unchanged after opening an account, so the $100.00 deposit is moved from the funding account, not created. | Resolved |
-| EO-10 | Open New Account | An account can be opened when the funding account has less than $100.00, and the funding account balance goes negative. | To verify |
+| EO-10 | Open New Account | An account can be opened when the funding account has less than $100.00, and the funding account balance goes negative. | Confirmed: PBQ-12 |
+| EO-11 | Transfer Funds, Bill Pay | A zero amount is accepted and recorded as a $0.00 transaction; a transfer from an account to itself is also accepted and recorded. | Confirmed: PBQ-7 (Transfer Funds), PBQ-10 (Bill Pay) |
+| EO-12 | Request Loan | The down payment is compared with the total of all accounts instead of the selected account, and the selected account can be overdrawn. | Confirmed: PBQ-13 |
+| EO-13 | Request Loan | The new LOAN account balance is added to the Accounts Overview total as a positive amount, so taking a loan increases the total. | To verify (intended behavior unknown) |
+| EO-14 | Request Loan | A zero down payment is approved, and the loan amount limit is unclear (1692.68 was approved and 100000.00 was denied). | To verify |
 
-These are leads only. Each one is confirmed with repeatable steps during test execution, and only then is a defect report written.
+Items marked "To verify" are leads only. Confirmed items have repeatable steps, evidence in reports/evidence, and a defect report in the bugs folder.
 
 ## 4. Technical reference
 
