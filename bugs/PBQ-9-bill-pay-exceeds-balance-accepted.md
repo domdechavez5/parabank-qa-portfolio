@@ -27,7 +27,7 @@ The payment is rejected with a clear insufficient-funds message and no balance c
 The payment is accepted. The page shows "Bill Payment to Test Utility Co in the amount of $1100.01 from account 13122 was successful." Account 13122 = -0.01 (available amount 0.00) and the Accounts Overview total is 592.66.
 
 ## Impact
-A payment can exceed the available balance, so accounts can be overdrawn by bill payments, and money goes out to an outside payee that the customer does not have. Severity is Major and not Critical because it is not confirmed whether overdrafts are intended (the seeded data contains accounts 12345 and 12678 with negative balances). Request Loan does reject a down payment above the account balance, so the application is inconsistent.
+A payment can exceed the available balance, so accounts can be overdrawn by bill payments, and money goes out to an outside payee that the customer does not have. Severity is Major and not Critical because it is not confirmed whether overdrafts are intended (the seeded data contains accounts 12345 and 12678 with negative balances). Request Loan has a related funds check, but it compares the down payment with the total of all accounts instead of the selected account (see PBQ-13).
 
 ## Evidence
 Before the payment:

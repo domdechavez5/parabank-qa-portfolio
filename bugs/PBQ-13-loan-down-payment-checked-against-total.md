@@ -77,3 +77,7 @@ Scenario C, after:
 Scenario D, page after submitting (denied):
 
 ![Loan result, scenario D](../reports/evidence/TC-F09-INV-04_confirmation.png)
+
+Scenario D, after (balances unchanged):
+
+![Accounts Overview after, scenario D](../reports/evidence/TC-F09-INV-04_after.png)

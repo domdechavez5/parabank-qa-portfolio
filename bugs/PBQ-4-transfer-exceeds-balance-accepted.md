@@ -26,7 +26,7 @@ The transfer is rejected with a clear insufficient-funds message and no balance 
 The transfer is accepted. Account 13122 = -0.01 (available amount 0.00) and account 12900 = 1100.01. The overview total stays at 1692.67.
 
 ## Impact
-A transfer can exceed the available balance, so accounts can be overdrawn by transfers. Severity is Major and not Critical because it is not confirmed whether overdrafts are intended (the seeded data contains accounts 12345 and 12678 with negative balances). Request Loan does reject a down payment above the account balance, so the application is inconsistent.
+A transfer can exceed the available balance, so accounts can be overdrawn by transfers. Severity is Major and not Critical because it is not confirmed whether overdrafts are intended (the seeded data contains accounts 12345 and 12678 with negative balances). Request Loan has a related funds check, but it compares the down payment with the total of all accounts instead of the selected account (see PBQ-13).
 
 ## Evidence
 Before the transfer:

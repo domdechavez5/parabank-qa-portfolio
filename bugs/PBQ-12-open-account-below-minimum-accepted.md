@@ -33,7 +33,7 @@ In all three cases the account is opened ("Account Opened! Congratulations, your
 | 12345 | -2300.00 | -2400.00 (available 0.00) |
 
 ## Impact
-The minimum-deposit rule shown on the page is not enforced, and the new account is funded with money the funding account does not have, which silently overdraws it. Severity is Major and not Critical because the total is unchanged and it is not confirmed whether overdrafts are intended (the seeded data contains accounts 12345 and 12678 with negative balances). Transfer Funds and Bill Pay show the same missing balance check (PBQ-4, PBQ-9), while Request Loan rejects a down payment above the account balance, so the application is inconsistent.
+The minimum-deposit rule shown on the page is not enforced, and the new account is funded with money the funding account does not have, which silently overdraws it. Severity is Major and not Critical because the total is unchanged and it is not confirmed whether overdrafts are intended (the seeded data contains accounts 12345 and 12678 with negative balances). Transfer Funds and Bill Pay show the same missing balance check (PBQ-4, PBQ-9), while Request Loan has a related funds check that compares the down payment with the total of all accounts instead of the selected account (see PBQ-13).
 
 ## Evidence
 Funding account 12456, before:
