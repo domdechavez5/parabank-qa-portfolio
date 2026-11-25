@@ -28,7 +28,7 @@ No transaction is shown for account 12900, or a clear message says none was foun
 The search lists "Funds Transfer Sent", Debit $100.00 (ID 14476) even though account 12900 is selected. That transaction belongs to account 13122; account 12900 only has the matching credit, with a different ID.
 
 ## Impact
-The account dropdown has no effect on this search mode, so the page can show a transaction that does not belong to the selected account. A user could misread which account the transaction was made on. Severity is Minor and priority Low because all the accounts involved belong to the same customer. The amount search respects the selected account (see TC-F07-13), so the inconsistency is limited to the transaction ID search. It was not tested whether a transaction ID belonging to a different customer can be found; that would be a much more serious issue and should be investigated separately.
+The account dropdown has no effect on this search mode, so the page can show a transaction that does not belong to the selected account. A user could misread which account the transaction was made on. Severity is Minor and priority Low because all the accounts involved belong to the same customer. The amount search respects the selected account (see TC-F07-13), so the inconsistency is limited to the transaction ID search. A follow-up test showed that the same search also lists transactions that belong to a different customer (see PBQ-20), which is a much more serious issue.
 
 ## Evidence
 Transaction Details of the setup transfer (the debit on account 13122):
